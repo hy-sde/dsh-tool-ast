@@ -1,6 +1,6 @@
 {
   "name": "@hy-sde-org/dsh-tool-ast",
-  "version": "0.1.0-rc.1",
+  "version": "0.1.0-rc.7",
   "description": "The ast_grep (structural code search) and ast_edit (structural rewrite) tools for DeepSeek Harness over the packaged ast-grep native engine — a standalone plugin with no upstream harness changes required.",
   "type": "module",
   "main": "./dist/index.js",
