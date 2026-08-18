@@ -119,7 +119,12 @@ plane, exactly as in the shipped presets:
   - `hy-sde-ast-fs-local` — `@deepseek-ai/dsh-fs-local` (cwd: `DSH_CWD` or the
     harness process cwd; override by patching this row)
   - `hy-sde-ast-tool-fs` — `@deepseek-ai/dsh-tool-fs` with `enableEdit: false`
-    (read/write only — the `edit` name belongs to dsh-tool-edit or the host)
+    (read/write only — the `edit` name belongs to dsh-tool-edit or the host).
+    **On harness releases whose `tool-fs` predates the `enableEdit` option**
+    (the `dsh-v0.1.0-rc.7` tag and the published
+    `@deepseek-ai/dsh-tool-fs@0.1.0-rc.7`) the key is silently ignored and the
+    bundle also registers `edit` — harmless when installed standalone, fatal
+    only if a second `edit`-owner (dsh-tool-edit) lands in the same realm.
   - `hy-sde-ast-tool-ast` — `@hy-sde-org/dsh-tool-ast`
 
 Configure per deployment by patching the rows by id:
@@ -141,6 +146,17 @@ Install `@hy-sde-org/dsh-tool-edit` and this package's tools **inside one
 filesystem realm** rather than both bundles standalone (each bundle owns a
 `tool-fs` and the second would collide). Follow the harness `code-edit`
 preset shape: mount both tool rows under a single fs-isolated group.
+
+> **Requires a modern harness `tool-fs`.** This pairing depends on
+> `@deepseek-ai/dsh-tool-fs` supporting `enableEdit: false` so the plain
+> `edit`-owner steps aside for the rich editor — a feature that landed after
+> the `dsh-v0.1.0-rc.7` tag (current dev tree / next release). On the released
+> `rc.7` harness there is no `code-edit` preset and a `tool-fs` row always
+> registers `edit`, so the pairing cannot be assembled there. On such a
+> release, install **this bundle standalone** and keep the shipped `edit` — 
+> `ast_grep`/`ast_edit` complement the stock editor with no conflicts
+> (verified). The `dsh-tool-edit` bundle, by contrast, fails to boot on `rc.7`
+> because its own `tool-fs` + `tool-edit` rows both claim `edit`.
 
 ## Engine behavior
 
