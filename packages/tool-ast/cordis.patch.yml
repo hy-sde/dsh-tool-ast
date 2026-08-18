@@ -1,0 +1,63 @@
+# @hy-sde-org/dsh-tool-ast — a self-contained AST structural search/rewrite
+# surface.
+#
+# The plugin brings its OWN fs realm: `ctx.fs` is not mounted host-wide in
+# DeepSeek Harness (presets own local filesystem discovery), so these rows
+# make the deployment self-sufficient — `read`/`write` plus the structural
+# `ast_grep` / `ast_edit` tools. The realm is isolated like a preset's
+# filesystem group so the fs tools and the ast tools share one fs instance
+# and one observation ledger. `ast_edit` applies rewrites ONLY with
+# `apply: true`, through the same `fs/observed` + `fs/edit-intent` +
+# writeText-with-version-guard flow the observation policy enforces.
+#
+# The `subprocess` seam stays on the host plane (stock DeepSeek Harness base
+# mounts `@deepseek-ai/dsh-subprocess-local`); only the model-facing tools
+# and the filesystem realm move.
+#
+# All row ids carry the `hy-sde-` prefix to avoid clashing with any shipped
+# row of the same name (a duplicate loader id fails the boot).
+#
+# Override per deployment (e.g. set the working directory root) by patching
+# the row by id:
+#
+#   - id: hy-sde-ast-fs-local
+#     config:
+#       cwd: /path/to/workspace
+#
+# To pair with @hy-sde-org/dsh-tool-edit (rich editor): do NOT install both
+# bundles on one profile — each owns a filesystem realm and the second
+# `tool-fs` would collide. Mount the ast tools into the SAME realm as the
+# editor instead (e.g. as a row beside `hy-sde-tool-edit` inside the
+# `hy-sde-edit-fs` group), mirroring how the harness `code-edit` preset
+# assembles tool-fs + tool-edit + tool-ast.
+- insert:
+    - id: hy-sde-ast-fs
+      name: cordis:group
+      group: true
+      isolate:
+        fs: true
+      config:
+        - id: hy-sde-ast-fs-local
+          name: '@deepseek-ai/dsh-fs-local'
+          config:
+            cwd: !!js process.env.DSH_CWD ?? process.cwd()
+
+        - id: hy-sde-ast-tool-fs
+          name: '@deepseek-ai/dsh-tool-fs'
+          config:
+            # The ast tools are not a text editor; keep the suite's own
+            # `edit` row (or a paired rich editor) as the single edit tool.
+            enableEdit: false
+
+        - id: hy-sde-ast-tool-ast
+          name: '@hy-sde-org/dsh-tool-ast'
+          config:
+            astGrepMaxMatches: 100
+            astGrepMaxNodeBytes: 2000
+            astEditMaxHunkBytes: 4000
+            astEditMaxFiles: 200
+            searchMetaMaxBytes: 65536
+            rawOutputMaxBytes: 8388608
+            graceMs: 3000
+            stderrMaxBytes: 65536
+            timeoutMs: 30000

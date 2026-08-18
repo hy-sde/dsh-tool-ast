@@ -1,0 +1,15 @@
+packages:
+  - packages/*
+
+allowBuilds:
+  # The ast_grep/ast_edit tools run the packaged @ast-grep/cli native engine; its
+  # postinstall hard-links the matching platform optional package's binary into
+  # the package root (the sole reason the dependency exists).
+  '@ast-grep/cli': true
+  # Pulled in by @deepseek-ai/dsh-subprocess-local (a dev/test dependency of the
+  # integration suite). The persistent PTY backend, including ConPTY on Windows.
+  node-pty: true
+  # The subprocess-local worker restores the executable bit on its spawn helper.
+  '@deepseek-ai/dsh-subprocess-local': true
+  esbuild: set this to true or false
+  koffi: set this to true or false
