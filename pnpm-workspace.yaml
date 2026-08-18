@@ -11,5 +11,7 @@ allowBuilds:
   node-pty: true
   # The subprocess-local worker restores the executable bit on its spawn helper.
   '@deepseek-ai/dsh-subprocess-local': true
-  esbuild: set this to true or false
-  koffi: set this to true or false
+  # Build tooling for the package itself (type-stripped build uses esbuild)
+  # and the FFI layer pulled in by the platform runner chain.
+  esbuild: true
+  koffi: true
