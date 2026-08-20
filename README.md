@@ -120,9 +120,9 @@ plane, exactly as in the shipped presets:
     harness process cwd; override by patching this row)
   - `hy-sde-ast-tool-fs` — `@deepseek-ai/dsh-tool-fs` with `enableEdit: false`
     (read/write only — the `edit` name belongs to dsh-tool-edit or the host).
-    **On harness releases whose `tool-fs` predates the `enableEdit` option**
-    (the `dsh-v0.1.0-rc.7` tag and the published
-    `@deepseek-ai/dsh-tool-fs@0.1.0-rc.7`) the key is silently ignored and the
+    **On official harness releases — including `dsh-v0.1.0-rc.8` and
+    `@deepseek-ai/dsh-tool-fs@0.1.0-rc.8` — the `enableEdit` key does not exist
+    (`enableEdit` is a hy-sde fork feature), so it is silently ignored and the
     bundle also registers `edit` — harmless when installed standalone, fatal
     only if a second `edit`-owner (dsh-tool-edit) lands in the same realm.
   - `hy-sde-ast-tool-ast` — `@hy-sde-org/dsh-tool-ast`
@@ -145,19 +145,19 @@ Configure per deployment by patching the rows by id:
 Install `@hy-sde-org/dsh-tool-edit` and this package's tools **inside one
 filesystem realm** rather than both bundles standalone (each bundle owns a
 `tool-fs` and the second would collide). Follow the harness `code-edit` preset
-shape (hy-sde fork) or the rc.7 preset recipe in the tool-edit README: mount
+shape (hy-sde fork) or the rc.8 preset recipe in the tool-edit README: mount
 both tool rows under a single isolated group, and mount the tool-edit row at
 the agent plane.
 
-> **Harness releases without `enableEdit` (official `rc.7`):** the pairing
-> dependency on `tool-fs`'s `enableEdit: false` does not exist there — a
-> `tool-fs` row always registers `edit`, and a second `edit`-owner collides.
+> **Harness releases without `enableEdit` (all official releases, incl. `rc.8`):**
+> the pairing dependency on `tool-fs`'s `enableEdit: false` does not exist there
+> — a `tool-fs` row always registers `edit`, and a second `edit`-owner collides.
 > On such a release:
 >
 > - Install **this bundle standalone** and keep the shipped `edit` —
 >   `ast_grep`/`ast_edit` complement the stock editor with no conflicts
 >   (verified). 
-> - For the rich editor, use the **`dsh-tool-edit` rc.7 posture** instead: its
+> - For the rich editor, use the **`dsh-tool-edit` rc.8 posture** instead: its
 >   bundle disables the shipped `str_replace_editor` tool and mounts the rich
 >   `edit` at the agent plane (`examples/agent-preset/`), where its scoped
 >   `edit` shadows the stock global one. Mount `this` plugin's
