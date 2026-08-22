@@ -120,8 +120,8 @@ plane, exactly as in the shipped presets:
     harness process cwd; override by patching this row)
   - `hy-sde-ast-tool-fs` — `@deepseek-ai/dsh-tool-fs` with `enableEdit: false`
     (read/write only — the `edit` name belongs to dsh-tool-edit or the host).
-    **On official harness releases — including `dsh-v0.1.0-rc.8` and
-    `@deepseek-ai/dsh-tool-fs@0.1.0-rc.8` — the `enableEdit` key does not exist
+    **On official harness releases — including `dsh-v0.1.1-rc.2` and
+    `@deepseek-ai/dsh-tool-fs@0.1.1-rc.2` — the `enableEdit` key does not exist
     (`enableEdit` is a hy-sde fork feature), so it is silently ignored and the
     bundle also registers `edit` — harmless when installed standalone, fatal
     only if a second `edit`-owner (dsh-tool-edit) lands in the same realm.
